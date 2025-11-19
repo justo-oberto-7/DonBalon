@@ -1,0 +1,26 @@
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 6vw;
+  background: transparent;
+}
+
+.brand {
+  font-weight: 700;
+  color: #8a6f4a;
+  font-size: 20px;
+}
+
+.nav { display: flex; gap: 14px; align-items: center; }
+
+.nav-link { color: #4e4e4e; text-decoration: none; padding: 6px 8px; }
+.nav-link:hover { text-decoration: underline; }
+
+.nav-cta {
+  background: #8a6f4a;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+}
