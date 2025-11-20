@@ -7,10 +7,17 @@ class CanchaServicioService:
     def __init__(self, db_path: Optional[str] = None):
         self.repository = CanchaServicioRepository(db_path)
 
+    def validate(self, obj: CanchaServicio) -> None:
+        if not isinstance(obj.id_cancha, int):
+            raise ValueError("El id_cancha debe ser un entero.")
+        if not isinstance(obj.id_servicio, int):
+            raise ValueError("El id_servicio debe ser un entero.")
+
     def insert(self, obj: CanchaServicio) -> CanchaServicio:
+        self.validate(obj)
         return self.repository.create(obj)
 
-    def get_by_id(self, id_cancha: int, id_servicio: int) -> Optional[CanchaServicio]:
+    def get_by_ids(self, id_cancha: int, id_servicio: int) -> Optional[CanchaServicio]:
         return self.repository.get_by_ids(id_cancha, id_servicio)
 
     def delete(self, id_cancha: int, id_servicio: int) -> None:
@@ -18,3 +25,4 @@ class CanchaServicioService:
 
     def list_all(self) -> List[CanchaServicio]:
         return self.repository.get_all()
+

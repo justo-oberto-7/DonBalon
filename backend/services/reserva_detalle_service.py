@@ -1,4 +1,5 @@
 from typing import List, Optional
+from decimal import Decimal
 from classes.reserva_detalle import ReservaDetalle
 from repositories.reserva_detalle_repository import ReservaDetalleRepository
 
@@ -7,13 +8,29 @@ class ReservaDetalleService:
     def __init__(self, db_path: Optional[str] = None):
         self.repository = ReservaDetalleRepository(db_path)
 
+    def validate(self, obj: ReservaDetalle) -> None:
+        if not isinstance(obj.id_reserva, int):
+            raise ValueError("El id_reserva debe ser un entero.")
+        if not isinstance(obj.id_cancha, int):
+            raise ValueError("El id_cancha debe ser un entero.")
+        if not isinstance(obj.id_horario, int):
+            raise ValueError("El id_horario debe ser un entero.")
+        if not isinstance(obj.precioxhora, Decimal):
+            raise ValueError("El precioxhora debe ser un Decimal.")
+        if not isinstance(obj.costoxhora, Decimal):
+            raise ValueError("El costoxhora debe ser un Decimal.")
+        if not isinstance(obj.precio_total_item, Decimal):
+            raise ValueError("El precio_total_item debe ser un Decimal.")
+
     def insert(self, obj: ReservaDetalle) -> ReservaDetalle:
+        self.validate(obj)
         return self.repository.create(obj)
 
     def get_by_id(self, id_detalle: int) -> Optional[ReservaDetalle]:
         return self.repository.get_by_id(id_detalle)
 
     def update(self, obj: ReservaDetalle) -> None:
+        self.validate(obj)
         self.repository.update(obj)
 
     def delete(self, id_detalle: int) -> None:

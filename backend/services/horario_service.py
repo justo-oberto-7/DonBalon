@@ -7,13 +7,23 @@ class HorarioService:
     def __init__(self, db_path: Optional[str] = None):
         self.repository = HorarioRepository(db_path)
 
+    def validate(self, obj: Horario) -> None:
+        if not obj.hora_inicio:
+            raise ValueError("La hora de inicio es obligatoria.")
+        if not obj.hora_fin:
+            raise ValueError("La hora de fin es obligatoria.")
+        # Podríamos validar que hora_inicio < hora_fin, pero eso depende de la lógica de negocio (turnos nocturnos?)
+        # Por ahora solo validamos tipos implícitamente al usarlos, o explícitamente si son objetos time
+
     def insert(self, obj: Horario) -> Horario:
+        self.validate(obj)
         return self.repository.create(obj)
 
     def get_by_id(self, id_horario: int) -> Optional[Horario]:
         return self.repository.get_by_id(id_horario)
 
     def update(self, obj: Horario) -> None:
+        self.validate(obj)
         self.repository.update(obj)
 
     def delete(self, id_horario: int) -> None:
