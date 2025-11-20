@@ -95,3 +95,32 @@ class CanchaServicioRepository(BaseRepository):
         """
         sql = f"DELETE FROM {self.TABLE} WHERE id_cancha = ?"
         self.execute(sql, (id_cancha,))
+
+    def get_by_ids(self, id_cancha: int, id_servicio: int) -> Optional[CanchaServicio]:
+        """
+        Obtiene una asociación por sus ids
+
+        Args:
+            id_cancha: Id de la cancha
+            id_servicio: Id del servicio
+
+        Returns:
+            Objeto CanchaServicio o None
+        """
+        row = self.query_one(
+            f"SELECT * FROM {self.TABLE} WHERE id_cancha = ? AND id_servicio = ?",
+            (id_cancha, id_servicio),
+        )
+        if not row:
+            return None
+        return cancha_servicio_from_dict(dict(row))
+
+    def get_all(self) -> List[CanchaServicio]:
+        """
+        Obtiene todas las asociaciones
+
+        Returns:
+            Lista de objetos CanchaServicio
+        """
+        rows = self.query_all(f"SELECT * FROM {self.TABLE}")
+        return [cancha_servicio_from_dict(dict(row)) for row in rows]
