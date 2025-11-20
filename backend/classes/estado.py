@@ -5,10 +5,15 @@ from typing import Optional, Dict, Any
 class Estado:
     id_estado: Optional[int] = None
     nombre: str = ""
+    ambito: str = ""
 
     def to_dict(self) -> Dict[str, Any]:
-        return {"id_estado": self.id_estado, "nombre": self.nombre}
+        return {"id_estado": self.id_estado, "nombre": self.nombre, "ambito": self.ambito}
 
 
 def from_dict(data: Dict[str, Any]) -> "Estado":
-    return Estado(id_estado=data.get("id_estado"), nombre=data.get("nombre", ""))
+    return Estado(
+        id_estado=data.get("id_estado"),
+        nombre=data.get("nombre", ""),
+        ambito=data.get("ambito", "")
+    )

@@ -10,9 +10,13 @@ def insert_sample_data(db_path):
     
     try:
         # Estado
-        cursor.execute("INSERT INTO Estado (nombre) VALUES ('Disponible')")
-        cursor.execute("INSERT INTO Estado (nombre) VALUES ('No disponible')")
-        cursor.execute("INSERT INTO Estado (nombre) VALUES ('Mantenimiento')")
+        cursor.execute("INSERT INTO Estado (nombre, ambito) VALUES ('Disponible', 'cancha')")
+        cursor.execute("INSERT INTO Estado (nombre, ambito) VALUES ('No disponible', 'cancha')")
+        cursor.execute("INSERT INTO Estado (nombre, ambito) VALUES ('Mantenimiento', 'cancha')")
+        cursor.execute("INSERT INTO Estado (nombre, ambito) VALUES ('PENDIENTE', 'reserva')")
+        cursor.execute("INSERT INTO Estado (nombre, ambito) VALUES ('CONFIRMADA', 'reserva')")
+        cursor.execute("INSERT INTO Estado (nombre, ambito) VALUES ('PENDIENTE', 'pago')")
+        cursor.execute("INSERT INTO Estado (nombre, ambito) VALUES ('PAGADO', 'pago')")
         
         # TipoCancha
         cursor.execute("INSERT INTO TipoCancha (descripcion, precio_hora) VALUES ('Futbol', 500.00)")

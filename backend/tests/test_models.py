@@ -46,7 +46,7 @@ def test_models_roundtrip():
     torneo = Torneo(1, "Copa", datetime.date(2025, 3, 1), datetime.date(2025, 3, 10))
     equipo = Equipo(1, 1, "Equipo A", 11)
     cancha = Cancha(1, 1, 1, "Cancha 1")
-    estado = Estado(1, "Disponible")
+    estado = Estado(1, "Disponible", "cancha")
     tipo_cancha = TipoCancha(1, "Futbol", Decimal("500.00"))
     turno = Turno(1, 1, 2, datetime.date(2025, 4, 4))
     horario = Horario(1, datetime.time(9, 0), datetime.time(10, 0))

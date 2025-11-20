@@ -11,7 +11,6 @@ class EstadoRepository(BaseRepository):
     """Repositorio para manejar operaciones CRUD de la entidad Estado"""
 
     TABLE = "Estado"
-
     def create(self, estado: Estado) -> Estado:
         """
         Inserta un nuevo Estado en la base de datos
@@ -22,8 +21,8 @@ class EstadoRepository(BaseRepository):
         Returns:
             El objeto Estado con el id asignado por la base de datos
         """
-        sql = f"INSERT INTO {self.TABLE} (nombre) VALUES (?)"
-        cur = self.execute(sql, (estado.nombre,))
+        sql = f"INSERT INTO {self.TABLE} (nombre, ambito) VALUES (?, ?)"
+        cur = self.execute(sql, (estado.nombre, estado.ambito))
         estado.id_estado = cur.lastrowid
         return estado
 
@@ -59,8 +58,8 @@ class EstadoRepository(BaseRepository):
         Args:
             estado: Objeto Estado con los datos a actualizar
         """
-        sql = f"UPDATE {self.TABLE} SET nombre = ? WHERE id_estado = ?"
-        self.execute(sql, (estado.nombre, estado.id_estado))
+        sql = f"UPDATE {self.TABLE} SET nombre = ?, ambito = ? WHERE id_estado = ?"
+        self.execute(sql, (estado.nombre, estado.ambito, estado.id_estado))
 
     def delete(self, id_estado: int) -> None:
         """
