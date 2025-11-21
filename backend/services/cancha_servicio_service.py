@@ -1,11 +1,12 @@
+import sqlite3
 from typing import List, Optional
 from classes.cancha_servicio import CanchaServicio
 from repositories.cancha_servicio_repository import CanchaServicioRepository
 
 
 class CanchaServicioService:
-    def __init__(self, db_path: Optional[str] = None):
-        self.repository = CanchaServicioRepository(db_path)
+    def __init__(self, db_path: Optional[str] = None, connection: Optional[sqlite3.Connection] = None):
+        self.repository = CanchaServicioRepository(db_path, connection)
 
     def validate(self, obj: CanchaServicio) -> None:
         if not isinstance(obj.id_cancha, int):

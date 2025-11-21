@@ -1,11 +1,12 @@
+import sqlite3
 from typing import List, Optional
 from classes.turno import Turno
 from repositories.turno_repository import TurnoRepository
 
 
 class TurnoService:
-    def __init__(self, db_path: Optional[str] = None):
-        self.repository = TurnoRepository(db_path)
+    def __init__(self, db_path: Optional[str] = None, connection: Optional[sqlite3.Connection] = None):
+        self.repository = TurnoRepository(db_path, connection)
 
     def validate(self, obj: Turno) -> None:
         if not isinstance(obj.id_cancha, int):

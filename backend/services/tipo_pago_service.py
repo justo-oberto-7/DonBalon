@@ -1,11 +1,12 @@
+import sqlite3
 from typing import List, Optional
 from classes.tipo_pago import TipoPago
 from repositories.tipo_pago_repository import TipoPagoRepository
 
 
 class TipoPagoService:
-    def __init__(self, db_path: Optional[str] = None):
-        self.repository = TipoPagoRepository(db_path)
+    def __init__(self, db_path: Optional[str] = None, connection: Optional[sqlite3.Connection] = None):
+        self.repository = TipoPagoRepository(db_path, connection)
 
     def validate(self, obj: TipoPago) -> None:
         if not obj.descripcion:

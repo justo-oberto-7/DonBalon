@@ -11,26 +11,34 @@ from typing import Any, List, Optional, Tuple
 class BaseRepository:
     """Clase base que proporciona métodos comunes para acceso a datos"""
 
-    def __init__(self, db_path: Optional[str] = None):
+    def __init__(self, db_path: Optional[str] = None, connection: Optional[sqlite3.Connection] = None):
         """
         Inicializa la conexión a la base de datos SQLite
 
         Args:
             db_path: Ruta a la base de datos. Si es None, se busca en la carpeta backend
+            connection: Conexión existente (inyección de dependencias). Si se provee, no se cierra al destruir.
         """
-        if db_path is None:
-            # Obtener la ruta al archivo donbalon.db en la carpeta backend
-            root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-            db_path = os.path.join(root, "donbalon.db")
+        self._owned = False
+        
+        if connection:
+            self.conn = connection
+            self.db_path = None 
+        else:
+            self._owned = True
+            if db_path is None:
+                # Obtener la ruta al archivo donbalon.db en la carpeta backend/data
+                root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+                db_path = os.path.join(root, "data", "donbalon.db")
 
-        self.db_path = db_path
+            self.db_path = db_path
 
-        # Crear conexión a la base de datos
-        self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
-        # Permitir acceso a las filas como diccionarios
-        self.conn.row_factory = sqlite3.Row
-        # Habilitar restricciones de claves foráneas
-        self.conn.execute("PRAGMA foreign_keys = ON")
+            # Crear conexión a la base de datos
+            self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
+            # Permitir acceso a las filas como diccionarios
+            self.conn.row_factory = sqlite3.Row
+            # Habilitar restricciones de claves foráneas
+            self.conn.execute("PRAGMA foreign_keys = ON")
 
     def execute(self, sql: str, params: Tuple[Any, ...] = ()) -> sqlite3.Cursor:
         """
@@ -79,11 +87,12 @@ class BaseRepository:
         return cur.fetchall()
 
     def close(self) -> None:
-        """Cierra la conexión a la base de datos"""
-        try:
-            self.conn.close()
-        except Exception:
-            pass
+        """Cierra la conexión a la base de datos si es propiedad del repositorio"""
+        if self._owned:
+            try:
+                self.conn.close()
+            except Exception:
+                pass
 
     def __del__(self):
         """Asegura que la conexión se cierre al destruir el objeto"""

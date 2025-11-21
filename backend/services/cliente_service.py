@@ -1,14 +1,12 @@
-from typing import List, Optional
-from classes.cliente import Cliente
-from repositories.cliente_repository import ClienteRepository
+import sqlite3
 from typing import List, Optional
 from classes.cliente import Cliente
 from repositories.cliente_repository import ClienteRepository
 
 
 class ClienteService:
-    def __init__(self, db_path: Optional[str] = None):
-        self.repository = ClienteRepository(db_path)
+    def __init__(self, db_path: Optional[str] = None, connection: Optional[sqlite3.Connection] = None):
+        self.repository = ClienteRepository(db_path, connection)
 
     def validate(self, obj: Cliente) -> None:
         if not obj.nombre:

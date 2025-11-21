@@ -1,3 +1,4 @@
+import sqlite3
 from typing import List, Optional
 from decimal import Decimal
 from classes.pago import Pago
@@ -5,8 +6,8 @@ from repositories.pago_repository import PagoRepository
 
 
 class PagoService:
-    def __init__(self, db_path: Optional[str] = None):
-        self.repository = PagoRepository(db_path)
+    def __init__(self, db_path: Optional[str] = None, connection: Optional[sqlite3.Connection] = None):
+        self.repository = PagoRepository(db_path, connection)
 
     def validate(self, obj: Pago) -> None:
         if not isinstance(obj.id_reserva, int):

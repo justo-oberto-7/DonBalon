@@ -10,7 +10,7 @@ def init_database(db_path=None):
         db_path (str): Ruta a la base de datos. Si es None, se crea en la carpeta actual.
     """
     if db_path is None:
-        # Crear la BD en la carpeta backend
+        # Crear la BD en la carpeta backend/data
         current_dir = Path(__file__).parent
         db_path = current_dir / "donbalon.db"
     else:
@@ -43,9 +43,9 @@ def init_database(db_path=None):
         conn.close()
 
 if __name__ == "__main__":
-    # Crear la BD en la carpeta backend
-    backend_dir = Path(__file__).parent
-    db_path = backend_dir / "donbalon.db"
+    # Crear la BD en la carpeta backend/data
+    data_dir = Path(__file__).parent
+    db_path = data_dir / "donbalon.db"
     
     # Eliminar la BD anterior si existe
     #if db_path.exists():

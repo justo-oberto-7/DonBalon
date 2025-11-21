@@ -1,11 +1,12 @@
+import sqlite3
 from typing import List, Optional
 from classes.horario import Horario
 from repositories.horario_repository import HorarioRepository
 
 
 class HorarioService:
-    def __init__(self, db_path: Optional[str] = None):
-        self.repository = HorarioRepository(db_path)
+    def __init__(self, db_path: Optional[str] = None, connection: Optional[sqlite3.Connection] = None):
+        self.repository = HorarioRepository(db_path, connection)
 
     def validate(self, obj: Horario) -> None:
         if not obj.hora_inicio:

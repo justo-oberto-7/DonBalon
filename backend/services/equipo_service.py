@@ -1,11 +1,12 @@
+import sqlite3
 from typing import List, Optional
 from classes.equipo import Equipo
 from repositories.equipo_repository import EquipoRepository
 
 
 class EquipoService:
-    def __init__(self, db_path: Optional[str] = None):
-        self.repository = EquipoRepository(db_path)
+    def __init__(self, db_path: Optional[str] = None, connection: Optional[sqlite3.Connection] = None):
+        self.repository = EquipoRepository(db_path, connection)
 
     def validate(self, obj: Equipo) -> None:
         if not obj.nombre:

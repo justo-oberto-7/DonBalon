@@ -1,3 +1,4 @@
+import sqlite3
 from typing import List, Optional
 from decimal import Decimal
 from classes.reserva import Reserva
@@ -5,8 +6,8 @@ from repositories.reserva_repository import ReservaRepository
 
 
 class ReservaService:
-    def __init__(self, db_path: Optional[str] = None):
-        self.repository = ReservaRepository(db_path)
+    def __init__(self, db_path: Optional[str] = None, connection: Optional[sqlite3.Connection] = None):
+        self.repository = ReservaRepository(db_path, connection)
 
     def validate(self, obj: Reserva) -> None:
         if not isinstance(obj.id_cliente, int):

@@ -1,11 +1,12 @@
+import sqlite3
 from typing import List, Optional
 from classes.estado import Estado
 from repositories.estado_repository import EstadoRepository
 
 
 class EstadoService:
-    def __init__(self, db_path: Optional[str] = None):
-        self.repository = EstadoRepository(db_path)
+    def __init__(self, db_path: Optional[str] = None, connection: Optional[sqlite3.Connection] = None):
+        self.repository = EstadoRepository(db_path, connection)
 
     def validate(self, obj: Estado) -> None:
         if not obj.nombre:

@@ -1,3 +1,4 @@
+import sqlite3
 from typing import List, Optional
 from decimal import Decimal
 from classes.tipo_cancha import TipoCancha
@@ -5,8 +6,8 @@ from repositories.tipo_cancha_repository import TipoCanchaRepository
 
 
 class TipoCanchaService:
-    def __init__(self, db_path: Optional[str] = None):
-        self.repository = TipoCanchaRepository(db_path)
+    def __init__(self, db_path: Optional[str] = None, connection: Optional[sqlite3.Connection] = None):
+        self.repository = TipoCanchaRepository(db_path, connection)
 
     def validate(self, obj: TipoCancha) -> None:
         if not obj.descripcion:

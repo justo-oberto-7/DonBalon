@@ -3,12 +3,10 @@ import sys
 import datetime
 from decimal import Decimal
 
-# Asegurarnos de que el root del proyecto esté en sys.path (este test está en backend/tests)
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-# Algunos archivos y paquetes fueron creados bajo backend/, asegurarnos de añadirlo también
 BACKEND_DIR = os.path.abspath(os.path.join(ROOT, 'backend'))
 if BACKEND_DIR not in sys.path:
     sys.path.insert(0, BACKEND_DIR)
