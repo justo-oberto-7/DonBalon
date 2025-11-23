@@ -2,6 +2,7 @@ import React from 'react';
 import './Home.css';
 import Header from '../layout/Header';
 import ActionButton from '../shared/ActionButton';
+import Schedule from '../schedule/Schedule';
 
 const Home = () => {
   return (
@@ -35,6 +36,13 @@ const Home = () => {
           </div>
         </div>
       </main>
+
+      <section className="schedule-section">
+        <h2 style={{marginLeft:16}}>Elige tu turno</h2>
+        <div style={{padding:'0 16px 32px'}}>
+          <Schedule />
+        </div>
+      </section>
     </div>
   );
 };

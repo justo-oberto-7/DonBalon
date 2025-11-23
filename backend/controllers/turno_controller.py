@@ -13,7 +13,7 @@ def get_turno_service():
     db_conn = DatabaseConnection()
     return TurnoService(connection=db_conn.get_connection())
 
-
+@router.get("", response_model=List[TurnoResponse])
 @router.get("/", response_model=List[TurnoResponse])
 def list_turnos(service: TurnoService = Depends(get_turno_service)):
     """Listar todos los turnos"""
