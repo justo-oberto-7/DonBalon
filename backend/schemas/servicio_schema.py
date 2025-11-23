@@ -5,7 +5,7 @@ from decimal import Decimal
 
 class ServicioBase(BaseModel):
     descripcion: str = Field(..., min_length=1, max_length=200, description="Descripción del servicio")
-    costoxservicio: Decimal = Field(..., description="Costo del servicio")
+    costo_servicio: Decimal = Field(..., description="Costo del servicio")
 
 
 class ServicioCreate(ServicioBase):
@@ -14,7 +14,7 @@ class ServicioCreate(ServicioBase):
 
 class ServicioUpdate(BaseModel):
     descripcion: Optional[str] = Field(None, min_length=1, max_length=200)
-    costoxservicio: Optional[Decimal] = None
+    costo_servicio: Optional[Decimal] = None
 
 
 class ServicioResponse(ServicioBase):

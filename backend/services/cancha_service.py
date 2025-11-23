@@ -13,8 +13,6 @@ class CanchaService:
             raise ValueError("El nombre de la cancha es obligatorio.")
         if len(obj.nombre) > 100:
             raise ValueError("El nombre de la cancha no puede exceder los 100 caracteres.")
-        if not isinstance(obj.id_estado, int):
-            raise ValueError("El id_estado debe ser un entero.")
         if not isinstance(obj.id_tipo, int):
             raise ValueError("El id_tipo debe ser un entero.")
 

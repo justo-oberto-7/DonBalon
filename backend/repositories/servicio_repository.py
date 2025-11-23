@@ -23,7 +23,7 @@ class ServicioRepository(BaseRepository):
             El objeto Servicio con el id asignado
         """
         sql = f"INSERT INTO {self.TABLE} (descripcion, costo_servicio) VALUES (?, ?)"
-        cur = self.execute(sql, (servicio.descripcion, servicio.costoxservicio))
+        cur = self.execute(sql, (servicio.descripcion, str(servicio.costo_servicio)))
         servicio.id_servicio = cur.lastrowid
         return servicio
 
@@ -60,7 +60,7 @@ class ServicioRepository(BaseRepository):
             servicio: Objeto Servicio con los datos a actualizar
         """
         sql = f"UPDATE {self.TABLE} SET descripcion = ?, costo_servicio = ? WHERE id_servicio = ?"
-        self.execute(sql, (servicio.descripcion, servicio.costoxservicio, servicio.id_servicio))
+        self.execute(sql, (servicio.descripcion, str(servicio.costo_servicio), servicio.id_servicio))
 
     def delete(self, id_servicio: int) -> None:
         """

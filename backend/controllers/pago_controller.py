@@ -41,8 +41,7 @@ def create_pago(pago_data: PagoCreate, service: PagoService = Depends(get_pago_s
         id_reserva=pago_data.id_reserva,
         id_metodo_pago=pago_data.id_metodo_pago,
         fecha_pago=pago_data.fecha_pago,
-        monto=pago_data.monto,
-        estado_pago=pago_data.estado_pago
+        monto=pago_data.monto
     )
     
     try:
@@ -71,7 +70,6 @@ def update_pago(id_pago: int, pago_data: PagoUpdate, service: PagoService = Depe
     nuevo_metodo = pago_data.id_metodo_pago if pago_data.id_metodo_pago is not None else pago_actual.id_metodo_pago
     nueva_fecha = pago_data.fecha_pago if pago_data.fecha_pago is not None else pago_actual.fecha_pago
     nuevo_monto = pago_data.monto if pago_data.monto is not None else pago_actual.monto
-    nuevo_estado = pago_data.estado_pago if pago_data.estado_pago is not None else pago_actual.estado_pago
 
     # 3. Crear la instancia para actualizar con los datos mezclados
     pago_a_guardar = Pago(
@@ -79,8 +77,7 @@ def update_pago(id_pago: int, pago_data: PagoUpdate, service: PagoService = Depe
         id_reserva=nueva_reserva,
         id_metodo_pago=nuevo_metodo,
         fecha_pago=nueva_fecha,
-        monto=nuevo_monto,
-        estado_pago=nuevo_estado
+        monto=nuevo_monto
     )
     
     try:

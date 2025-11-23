@@ -90,7 +90,7 @@ class ReservaService:
             if not tipo_cancha:
                 raise ValueError(f"El tipo de cancha {cancha.id_tipo} no existe.")
             
-            precio_item = tipo_cancha.precioxhora
+            precio_item = tipo_cancha.precio_hora
             total_reserva += precio_item
             
             items_procesados.append({

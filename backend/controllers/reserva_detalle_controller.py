@@ -39,10 +39,7 @@ def create_reserva_detalle(detalle_data: ReservaDetalleCreate, service: ReservaD
     # Conversión manual de Schema a Clase de Dominio
     detalle = ReservaDetalle(
         id_reserva=detalle_data.id_reserva,
-        id_cancha=detalle_data.id_cancha,
-        id_horario=detalle_data.id_horario,
-        precioxhora=detalle_data.precioxhora,
-        costoxhora=detalle_data.costoxhora,
+        id_turno=detalle_data.id_turno,
         precio_total_item=detalle_data.precio_total_item
     )
     
@@ -69,20 +66,14 @@ def update_reserva_detalle(id_detalle: int, detalle_data: ReservaDetalleUpdate, 
     
     # 2. Merge inteligente
     nueva_reserva = detalle_data.id_reserva if detalle_data.id_reserva is not None else detalle_actual.id_reserva
-    nueva_cancha = detalle_data.id_cancha if detalle_data.id_cancha is not None else detalle_actual.id_cancha
-    nuevo_horario = detalle_data.id_horario if detalle_data.id_horario is not None else detalle_actual.id_horario
-    nuevo_precio_hora = detalle_data.precioxhora if detalle_data.precioxhora is not None else detalle_actual.precioxhora
-    nuevo_costo_hora = detalle_data.costoxhora if detalle_data.costoxhora is not None else detalle_actual.costoxhora
+    nuevo_turno = detalle_data.id_turno if detalle_data.id_turno is not None else detalle_actual.id_turno
     nuevo_precio_total = detalle_data.precio_total_item if detalle_data.precio_total_item is not None else detalle_actual.precio_total_item
 
     # 3. Crear la instancia para actualizar con los datos mezclados
     detalle_a_guardar = ReservaDetalle(
         id_detalle=id_detalle,
         id_reserva=nueva_reserva,
-        id_cancha=nueva_cancha,
-        id_horario=nuevo_horario,
-        precioxhora=nuevo_precio_hora,
-        costoxhora=nuevo_costo_hora,
+        id_turno=nuevo_turno,
         precio_total_item=nuevo_precio_total
     )
     

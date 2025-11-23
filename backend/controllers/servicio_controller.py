@@ -39,7 +39,7 @@ def create_servicio(servicio_data: ServicioCreate, service: ServicioService = De
     # Conversión manual de Schema a Clase de Dominio
     servicio = Servicio(
         descripcion=servicio_data.descripcion,
-        costoxservicio=servicio_data.costoxservicio
+        costo_servicio=servicio_data.costo_servicio
     )
     
     try:
@@ -65,13 +65,13 @@ def update_servicio(id_servicio: int, servicio_data: ServicioUpdate, service: Se
     
     # 2. Merge inteligente
     nueva_descripcion = servicio_data.descripcion if servicio_data.descripcion is not None else servicio_actual.descripcion
-    nuevo_costo = servicio_data.costoxservicio if servicio_data.costoxservicio is not None else servicio_actual.costoxservicio
+    nuevo_costo = servicio_data.costo_servicio if servicio_data.costo_servicio is not None else servicio_actual.costo_servicio
 
     # 3. Crear la instancia para actualizar con los datos mezclados
     servicio_a_guardar = Servicio(
         id_servicio=id_servicio,
         descripcion=nueva_descripcion,
-        costoxservicio=nuevo_costo
+        costo_servicio=nuevo_costo
     )
     
     try:

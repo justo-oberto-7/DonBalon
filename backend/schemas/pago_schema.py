@@ -9,7 +9,6 @@ class PagoBase(BaseModel):
     id_metodo_pago: int = Field(..., description="ID del método de pago")
     fecha_pago: date = Field(..., description="Fecha del pago")
     monto: Decimal = Field(..., description="Monto del pago")
-    estado_pago: str = Field(..., description="Estado del pago")
 
 
 class PagoCreate(PagoBase):
@@ -21,7 +20,6 @@ class PagoUpdate(BaseModel):
     id_metodo_pago: Optional[int] = None
     fecha_pago: Optional[date] = None
     monto: Optional[Decimal] = None
-    estado_pago: Optional[str] = None
 
 
 class PagoResponse(PagoBase):

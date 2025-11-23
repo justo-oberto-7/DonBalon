@@ -23,8 +23,8 @@ class PagoRepository(BaseRepository):
         Returns:
             El objeto Pago con el id asignado
         """
-        sql = f"INSERT INTO {self.TABLE} (id_reserva, id_metodo_pago, fecha_pago, monto, estado_pago) VALUES (?, ?, ?, ?, ?)"
-        cur = self.execute(sql, (pago.id_reserva, pago.id_metodo_pago, pago.fecha_pago, str(pago.monto), pago.estado_pago))
+        sql = f"INSERT INTO {self.TABLE} (id_reserva, id_metodo_pago, fecha_pago, monto) VALUES (?, ?, ?, ?)"
+        cur = self.execute(sql, (pago.id_reserva, pago.id_metodo_pago, pago.fecha_pago, str(pago.monto)))
         pago.id_pago = cur.lastrowid
         return pago
 
@@ -66,19 +66,6 @@ class PagoRepository(BaseRepository):
         rows = self.query_all(f"SELECT * FROM {self.TABLE} WHERE id_reserva = ?", (id_reserva,))
         return [pago_from_dict(dict(row)) for row in rows]
 
-    def get_by_estado(self, estado_pago: str) -> List[Pago]:
-        """
-        Obtiene todos los pagos con un estado específico
-
-        Args:
-            estado_pago: Estado del pago
-
-        Returns:
-            Lista de objetos Pago
-        """
-        rows = self.query_all(f"SELECT * FROM {self.TABLE} WHERE estado_pago = ?", (estado_pago,))
-        return [pago_from_dict(dict(row)) for row in rows]
-
     def get_by_fecha(self, fecha: date) -> List[Pago]:
         """
         Obtiene todos los pagos de una fecha
@@ -99,8 +86,8 @@ class PagoRepository(BaseRepository):
         Args:
             pago: Objeto Pago con los datos a actualizar
         """
-        sql = f"UPDATE {self.TABLE} SET id_reserva = ?, id_metodo_pago = ?, fecha_pago = ?, monto = ?, estado_pago = ? WHERE id_pago = ?"
-        self.execute(sql, (pago.id_reserva, pago.id_metodo_pago, pago.fecha_pago, str(pago.monto), pago.estado_pago, pago.id_pago))
+        sql = f"UPDATE {self.TABLE} SET id_reserva = ?, id_metodo_pago = ?, fecha_pago = ?, monto = ? WHERE id_pago = ?"
+        self.execute(sql, (pago.id_reserva, pago.id_metodo_pago, pago.fecha_pago, str(pago.monto), pago.id_pago))
 
     def delete(self, id_pago: int) -> None:
         """

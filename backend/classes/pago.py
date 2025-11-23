@@ -10,7 +10,6 @@ class Pago:
     id_metodo_pago: Optional[int] = None
     fecha_pago: Optional[datetime.date] = None
     monto: Decimal = Decimal("0.00")
-    estado_pago: str = ""
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -19,7 +18,6 @@ class Pago:
             "id_metodo_pago": self.id_metodo_pago,
             "fecha_pago": self.fecha_pago.isoformat() if self.fecha_pago else None,
             "monto": str(self.monto),
-            "estado_pago": self.estado_pago,
         }
 
 
@@ -38,5 +36,4 @@ def from_dict(data: Dict[str, Any]) -> "Pago":
         id_metodo_pago=data.get("id_metodo_pago"),
         fecha_pago=fecha,
         monto=monto,
-        estado_pago=data.get("estado_pago", ""),
     )

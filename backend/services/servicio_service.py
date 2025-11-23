@@ -14,7 +14,7 @@ class ServicioService:
             raise ValueError("La descripción del servicio es obligatoria.")
         if len(obj.descripcion) > 100:
             raise ValueError("La descripción no puede exceder los 100 caracteres.")
-        if not isinstance(obj.costoxservicio, Decimal):
+        if not isinstance(obj.costo_servicio, Decimal):
             raise ValueError("El costo del servicio debe ser un Decimal.")
 
     def insert(self, obj: Servicio) -> Servicio:

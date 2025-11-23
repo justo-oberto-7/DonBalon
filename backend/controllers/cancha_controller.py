@@ -39,7 +39,6 @@ def create_cancha(cancha_data: CanchaCreate, service: CanchaService = Depends(ge
     # Conversión manual de Schema a Clase de Dominio
     cancha = Cancha(
         nombre=cancha_data.nombre,
-        id_estado=cancha_data.id_estado,
         id_tipo=cancha_data.id_tipo
     )
     
@@ -66,14 +65,12 @@ def update_cancha(id_cancha: int, cancha_data: CanchaUpdate, service: CanchaServ
     
     # 2. Merge inteligente
     nuevo_nombre = cancha_data.nombre if cancha_data.nombre is not None else cancha_actual.nombre
-    nuevo_estado = cancha_data.id_estado if cancha_data.id_estado is not None else cancha_actual.id_estado
     nuevo_tipo = cancha_data.id_tipo if cancha_data.id_tipo is not None else cancha_actual.id_tipo
 
     # 3. Crear la instancia para actualizar con los datos mezclados
     cancha_a_guardar = Cancha(
         id_cancha=id_cancha,
         nombre=nuevo_nombre,
-        id_estado=nuevo_estado,
         id_tipo=nuevo_tipo
     )
     

@@ -71,7 +71,13 @@ def update_reserva(id_reserva: int, reserva_data: ReservaUpdate, service: Reserv
     nuevo_cliente = reserva_data.id_cliente if reserva_data.id_cliente is not None else reserva_actual.id_cliente
     nuevo_monto = reserva_data.monto_total if reserva_data.monto_total is not None else reserva_actual.monto_total
     nueva_fecha = reserva_data.fecha_reserva if reserva_data.fecha_reserva is not None else reserva_actual.fecha_reserva
-    nuevo_estado = reserva_data.estado_reserva if reserva_data.estado_reserva is not None else reserva_actual.estado_reserva
+    
+    # Manejo de estado
+    nuevo_estado_obj = reserva_actual.estado
+    if reserva_data.estado_reserva is not None:
+        from classes.reserva import ESTADOS_MAP, ReservaPendiente
+        estado_class = ESTADOS_MAP.get(reserva_data.estado_reserva.lower(), ReservaPendiente)
+        nuevo_estado_obj = estado_class()
 
     # 3. Crear la instancia para actualizar con los datos mezclados
     reserva_a_guardar = Reserva(
@@ -79,7 +85,7 @@ def update_reserva(id_reserva: int, reserva_data: ReservaUpdate, service: Reserv
         id_cliente=nuevo_cliente,
         monto_total=nuevo_monto,
         fecha_reserva=nueva_fecha,
-        estado_reserva=nuevo_estado
+        estado=nuevo_estado_obj
     )
     
     try:

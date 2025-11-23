@@ -18,10 +18,6 @@ class PagoService:
             raise ValueError("La fecha de pago es obligatoria.")
         if not isinstance(obj.monto, Decimal):
             raise ValueError("El monto debe ser un Decimal.")
-        if not obj.estado_pago:
-            raise ValueError("El estado del pago es obligatorio.")
-        if len(obj.estado_pago) > 30:
-            raise ValueError("El estado del pago no puede exceder los 30 caracteres.")
 
     def insert(self, obj: Pago) -> Pago:
         self.validate(obj)
