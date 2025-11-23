@@ -18,7 +18,7 @@ class TurnoUpdate(BaseModel):
     id_cancha: Optional[int] = None
     id_horario: Optional[int] = None
     fecha: Optional[date] = None
-    id_estado: Optional[int] = None
+    estado_turno: Optional[str] = None
 
 
 class TurnoResponse(TurnoBase):
