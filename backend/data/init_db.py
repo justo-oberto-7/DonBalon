@@ -33,10 +33,10 @@ def init_database(db_path=None):
         # Ejecutar el script SQL
         cursor.executescript(sql_script)
         conn.commit()
-        print(f"✓ Base de datos creada exitosamente en: {db_path}")
+        print(f" Base de datos creada exitosamente en: {db_path}")
         return conn
     except sqlite3.Error as e:
-        print(f"✗ Error al crear la base de datos: {e}")
+        print(f" Error al crear la base de datos: {e}")
         conn.rollback()
         raise
     finally:
@@ -55,5 +55,5 @@ if __name__ == "__main__":
     # Inicializar la BD
     init_database(str(db_path))
     
-    print("\n✓ Base de datos lista para usar!")
+    print("\n Base de datos lista para usar!")
     print(f"Ubicación: {db_path}")

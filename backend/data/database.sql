@@ -81,7 +81,6 @@ CREATE TABLE IF NOT EXISTS Pago (
     id_metodo_pago INTEGER NOT NULL,
     fecha_pago DATE NOT NULL,
     monto DECIMAL(10, 2) NOT NULL,
-    estado_pago VARCHAR(30) NOT NULL,
     FOREIGN KEY (id_reserva) REFERENCES Reserva(id_reserva),
     FOREIGN KEY (id_metodo_pago) REFERENCES MetodoPago(id_metodo_pago)
 );

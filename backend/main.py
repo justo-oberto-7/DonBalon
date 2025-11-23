@@ -18,6 +18,8 @@ from controllers import (
     torneo_controller,
 )
 
+
+
 # Crear la aplicación FastAPI
 app = FastAPI(
     title="DonBalon API",
@@ -34,7 +36,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Incluir los routers
+# Incluir los routers, para agrupar endpoints por funcionalidad
 app.include_router(cancha_controller.router)
 app.include_router(reserva_controller.router)
 app.include_router(cliente_controller.router)
@@ -69,4 +71,6 @@ def health_check():
 
 if __name__ == "__main__":
     import uvicorn
+
+        
     uvicorn.run(app, host="0.0.0.0", port=8000)
