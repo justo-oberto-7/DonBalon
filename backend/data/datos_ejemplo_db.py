@@ -44,11 +44,9 @@ def insert_sample_data(db_path):
         cursor.execute("INSERT INTO Horario (hora_inicio, hora_fin) VALUES ('15:00', '16:00')")
         
         # Turno
-        # Turnos asociados a reservas (id_estado=2 'No disponible')
-        cursor.execute("INSERT INTO Turno (id_cancha, id_horario, fecha, id_estado) VALUES (1, 1, '2025-11-20', 2)")
-        cursor.execute("INSERT INTO Turno (id_cancha, id_horario, fecha, id_estado) VALUES (1, 2, '2025-11-20', 2)")
-        # Turno libre (id_estado=1 'Disponible')
-        cursor.execute("INSERT INTO Turno (id_cancha, id_horario, fecha, id_estado) VALUES (2, 1, '2025-11-20', 1)")
+        cursor.execute("INSERT INTO Turno (id_cancha, id_horario, fecha, estado_turno) VALUES (1, 1, '2025-11-20', 'DISPONIBLE')")
+        cursor.execute("INSERT INTO Turno (id_cancha, id_horario, fecha, estado_turno) VALUES (1, 2, '2025-11-20', 'DISPONIBLE')")
+        cursor.execute("INSERT INTO Turno (id_cancha, id_horario, fecha, estado_turno) VALUES (2, 1, '2025-11-20', 'NO DISPONIBLE')")
         
         # Cliente
         cursor.execute("""INSERT INTO Cliente (nombre, apellido, DNI, telefono, mail) 
