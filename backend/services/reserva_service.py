@@ -17,7 +17,9 @@ from data.database_connection import DatabaseConnection
 
 
 from classes.estado_reserva.reserva_pagada import ReservaPagada
+from classes.estado_reserva.reserva_pendiente import ReservaPendiente
 from classes.estado_turno.turno_no_disponible import TurnoNoDisponible
+from repositories.metodo_pago_repository import MetodoPagoRepository
 
 ID_ESTADO_NO_DISPONIBLE = 2
 
@@ -34,6 +36,7 @@ class ReservaService:
         self.pago_repository = PagoRepository(connection=self.connection)
         self.cancha_repository = CanchaRepository(connection=self.connection)
         self.tipo_cancha_repository = TipoCanchaRepository(connection=self.connection)
+        self.metodo_pago_repository = MetodoPagoRepository(connection=self.connection)
 
     def validate(self, obj: Reserva) -> None:
         if not isinstance(obj.id_cliente, int):
@@ -76,6 +79,18 @@ class ReservaService:
         total_reserva = Decimal("0.00")
         items_procesados = []
 
+        # Validar método de pago y determinar estado inicial
+        metodo_pago = self.metodo_pago_repository.get_by_id(data.id_metodo_pago)
+        if not metodo_pago:
+            raise ValueError(f"El método de pago {data.id_metodo_pago} no existe.")
+
+        # Lógica condicional para el estado
+        if "efectivo" in metodo_pago.descripcion.lower():
+            estado_inicial = ReservaPendiente()
+        else:
+            estado_inicial = ReservaPagada()
+
+
         for item in data.items:
             # 1. Verificar si ya existe un turno para esa cancha/horario/fecha
             existing_turno = self.turno_repository.get_by_cancha_horario_fecha(
@@ -117,7 +132,7 @@ class ReservaService:
                 id_cliente=data.id_cliente,
                 monto_total=total_reserva,
                 fecha_reserva=date.today(),
-                estado=ReservaPagada() # Estado inicial: Pagada (Confirmada)
+                estado=estado_inicial
             )
             reserva_creada = self.repository.create(nueva_reserva)
 
