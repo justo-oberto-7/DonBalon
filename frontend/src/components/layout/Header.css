@@ -25,6 +25,7 @@
   text-decoration: none;
   padding: 6px 8px;
 }
+
 .nav-link:hover {
   text-decoration: underline;
 }
@@ -62,11 +63,11 @@
   .user-name {
     display: none;
   }
-  
+
   .nav {
     gap: 8px;
   }
-  
+
   .nav-link {
     font-size: 13px;
     padding: 4px 6px;

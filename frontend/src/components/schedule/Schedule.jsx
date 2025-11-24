@@ -132,7 +132,7 @@ export default function Schedule() {
   // Función para alternar la selección de un turno
   const toggleTurnoSelection = (turno, cancha, horario) => {
     const turnoId = turno.id_turno;
-    
+
     if (isTurnoSelected(turnoId)) {
       // Deseleccionar
       setSelectedTurnos(prev => prev.filter(t => t.id_turno !== turnoId));
@@ -314,7 +314,7 @@ export default function Schedule() {
                   </div>
                   <button
                     className="remove-turno-btn"
-                    onClick={() => toggleTurnoSelection(turno, {nombre: turno.cancha_nombre}, {label: turno.horario_inicio})}
+                    onClick={() => toggleTurnoSelection(turno, { nombre: turno.cancha_nombre }, { label: turno.horario_inicio })}
                     title="Quitar turno"
                   >
                     ✕
@@ -323,7 +323,7 @@ export default function Schedule() {
               ))}
             </div>
           </div>
-          
+
           <div className="reservation-actions">
             <button className="clear-selection-btn" onClick={clearSelection}>
               Limpiar selección
