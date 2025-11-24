@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import './Login.css';
 
-const Login = ({ onClose }) => {
+const Login = ({ onClose, message }) => {
     const [mail, setMail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -36,7 +36,7 @@ const Login = ({ onClose }) => {
                 <button className="login-close" onClick={onClose}>×</button>
 
                 <h2 className="login-title">Iniciar Sesión</h2>
-                <p className="login-subtitle">Ingresa tus credenciales para continuar</p>
+                <p className="login-subtitle">{message || 'Ingresa tus credenciales para continuar'}</p>
 
                 <form onSubmit={handleSubmit} className="login-form">
                     {error && (
