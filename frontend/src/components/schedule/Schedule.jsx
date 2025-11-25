@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
+import Login from "../auth/Login";
 import "./Schedule.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:8000";
@@ -15,8 +17,41 @@ export default function Schedule() {
   const [servicios, setServicios] = useState([]);
   const [date, setDate] = useState(isoDate(new Date()));
   const [hoverSlot, setHoverSlot] = useState(null);
+  const [isInitializing, setIsInitializing] = useState(true);
+  const [selectedTurnos, setSelectedTurnos] = useState([]);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginMessage, setLoginMessage] = useState("");
+  const { isAuthenticated } = useAuth();
+
+  // Inicializar turnos al cargar el componente
+  useEffect(() => {
+    async function inicializarTurnos() {
+      try {
+        // Primero expirar turnos pasados
+        await fetch(`${API_BASE}/turnos/expirar-pasados`, {
+          method: 'POST',
+        });
+
+        // Luego crear turnos del día actual si no existen
+        await fetch(`${API_BASE}/turnos/crear-del-dia`, {
+          method: 'POST',
+        });
+
+        console.log('Turnos inicializados correctamente');
+      } catch (error) {
+        console.error('Error al inicializar turnos:', error);
+      } finally {
+        setIsInitializing(false);
+      }
+    }
+
+    inicializarTurnos();
+  }, []);
 
   useEffect(() => {
+    // Esperar a que la inicialización termine antes de cargar datos
+    if (isInitializing) return;
+
     fetch(`${API_BASE}/canchas`)
       .then((r) => r.json())
       .then(setCanchas)
@@ -37,7 +72,7 @@ export default function Schedule() {
       .then((r) => r.json())
       .then(setServicios)
       .catch(() => setServicios([]));
-  }, []);
+  }, [isInitializing]);
 
   // Map horarios to sorted time slots (use hora_inicio)
   const timeSlots = useMemo(() => {
@@ -52,7 +87,6 @@ export default function Schedule() {
     // Convert horario objects: expect {id_horario, hora_inicio, hora_fin}
     const parsed = horarios.map((h) => {
       let start = h.hora_inicio || h.horaInicio || h.hora_inicio || "";
-      // hora_inicio may come as '09:00:00' or '09:00'
       const hour = parseInt(start.split(":")[0], 10);
       return { id: h.id_horario ?? h.id, label: start.slice(0, 5), hour };
     });
@@ -60,8 +94,8 @@ export default function Schedule() {
     return parsed;
   }, [horarios]);
 
-  // build map of occupied slots for selected date
-  const occupied = useMemo(() => {
+  // build map of turnos for selected date (both available and unavailable)
+  const turnosMap = useMemo(() => {
     const map = {};
     turnos.forEach((t) => {
       if (!t.fecha) return;
@@ -95,6 +129,69 @@ export default function Schedule() {
     return map;
   }, [canchaServicios, servicios]);
 
+  // Función para verificar si un turno está seleccionado
+  const isTurnoSelected = (turnoId) => {
+    return selectedTurnos.some(t => t.id_turno === turnoId);
+  };
+
+  // Función para alternar la selección de un turno
+  const toggleTurnoSelection = (turno, cancha, horario) => {
+    const turnoId = turno.id_turno;
+
+    if (isTurnoSelected(turnoId)) {
+      // Deseleccionar
+      setSelectedTurnos(prev => prev.filter(t => t.id_turno !== turnoId));
+    } else {
+      // Seleccionar - guardar el turno con información adicional
+      setSelectedTurnos(prev => [
+        ...prev,
+        {
+          ...turno,
+          cancha_nombre: cancha.nombre,
+          horario_inicio: horario.label,
+        }
+      ]);
+    }
+  };
+
+  // Función para limpiar todas las selecciones
+  const clearSelection = () => {
+    setSelectedTurnos([]);
+  };
+
+  // Función para proceder con la reserva
+  const handleProcederReserva = () => {
+    if (selectedTurnos.length === 0) {
+      alert('Debe seleccionar al menos un turno');
+      return;
+    }
+
+    // Verificar si hay sesión iniciada
+    if (!isAuthenticated()) {
+      setLoginMessage("Debes iniciar sesión para continuar con la reserva");
+      setShowLoginModal(true);
+      return;
+    }
+
+    // Si hay sesión, continuar con el proceso de reserva
+    console.log('Turnos seleccionados:', selectedTurnos);
+    // TODO: Implementar el siguiente paso del proceso de reserva
+    alert(`Has seleccionado ${selectedTurnos.length} turno(s). Continuar con el proceso de reserva...`);
+  };
+
+  // Callback cuando se cierra el modal de login
+  const handleCloseLogin = () => {
+    setShowLoginModal(false);
+    setLoginMessage("");
+
+    // Si después de cerrar el login el usuario se autenticó, proceder automáticamente
+    if (isAuthenticated() && selectedTurnos.length > 0) {
+      console.log('Usuario autenticado, procediendo con la reserva...');
+      // TODO: Aquí se podría llamar automáticamente al siguiente paso
+      alert(`Sesión iniciada. Procediendo con la reserva de ${selectedTurnos.length} turno(s)...`);
+    }
+  };
+
   function renderRow(cancha) {
     const cid = cancha.id_cancha ?? cancha.id;
     // build array of cells: left + one cell per timeSlot
@@ -112,22 +209,51 @@ export default function Schedule() {
     // time slot cells as direct children so grid columns align
     timeSlots.forEach((slot) => {
       const key = `${cid}__${slot.hour}`;
-      const isOccupied = !!occupied[key];
+      const turno = turnosMap[key];
+
+      // Determinar disponibilidad según el estado del turno
+      let slotClass = "slot";
+      let isClickable = false;
+      let tooltipText = "";
+      let isSelected = false;
+
+      if (!turno) {
+        // No existe turno para este slot - No disponible (no creado)
+        slotClass += " no-turno";
+        tooltipText = "No hay turno creado para este horario";
+      } else {
+        const estadoTurno = (turno.estado_turno || "").toLowerCase();
+        if (estadoTurno === "disponible") {
+          isSelected = isTurnoSelected(turno.id_turno);
+          slotClass += " available";
+          if (isSelected) {
+            slotClass += " selected";
+          }
+          isClickable = true;
+          tooltipText = isSelected ? "Click para deseleccionar" : "Click para seleccionar";
+        } else {
+          // "no disponible" o cualquier otro estado
+          slotClass += " occupied";
+          tooltipText = "No disponible";
+        }
+      }
+
       cells.push(
         <div
           key={slot.id + key}
-          className={`slot ${isOccupied ? "occupied" : "available"}`}
-          onMouseEnter={() => setHoverSlot(isOccupied ? null : key)}
+          className={slotClass}
+          onMouseEnter={() => setHoverSlot(isClickable && !isSelected ? key : null)}
           onMouseLeave={() => setHoverSlot(null)}
           onClick={() => {
-            if (!isOccupied)
-              alert(
-                `Seleccionaste cancha ${cancha.nombre} ${slot.label} del ${date}`
-              );
+            if (isClickable) {
+              toggleTurnoSelection(turno, cancha, slot);
+            }
           }}
-          title={isOccupied ? "No disponible" : "Haz click para reservar"}
+          title={tooltipText}
         >
-          {hoverSlot === key && !isOccupied ? (
+          {isSelected ? (
+            <div className="slot-selected-indicator" />
+          ) : hoverSlot === key && isClickable ? (
             <div className="slot-hover" />
           ) : null}
         </div>
@@ -149,6 +275,16 @@ export default function Schedule() {
 
   const template = `220px repeat(${timeSlots.length}, 1fr)`;
 
+  if (isInitializing) {
+    return (
+      <div className="schedule-root">
+        <div className="schedule-loading">
+          <p>Inicializando turnos...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="schedule-root">
       <div className="schedule-controls">
@@ -157,15 +293,19 @@ export default function Schedule() {
           <input
             type="date"
             value={date}
+            min={isoDate(new Date())}
             onChange={(e) => setDate(e.target.value)}
           />
         </label>
         <div className="legend">
           <div className="legend-item">
+            <span className="legend-swatch selected" /> Seleccionado
+          </div>
+          <div className="legend-item">
             <span className="legend-swatch occupied" /> No disponible
           </div>
           <div className="legend-item">
-            <span className="legend-swatch hover" /> Hover (selección)
+            <span className="legend-swatch available" /> Disponible
           </div>
         </div>
       </div>
@@ -185,6 +325,45 @@ export default function Schedule() {
 
         <div className="schedule-body">{canchas.map(renderRow)}</div>
       </div>
+
+      {/* Sección de turnos seleccionados y botón de reserva */}
+      {selectedTurnos.length > 0 && (
+        <div className="reservation-section">
+          <div className="selected-turnos-summary">
+            <h3>Turnos seleccionados ({selectedTurnos.length})</h3>
+            <div className="selected-turnos-list">
+              {selectedTurnos.map((turno) => (
+                <div key={turno.id_turno} className="selected-turno-item">
+                  <div className="turno-info">
+                    <span className="turno-cancha">{turno.cancha_nombre}</span>
+                    <span className="turno-horario">{turno.horario_inicio}</span>
+                    <span className="turno-fecha">{turno.fecha}</span>
+                  </div>
+                  <button
+                    className="remove-turno-btn"
+                    onClick={() => toggleTurnoSelection(turno, { nombre: turno.cancha_nombre }, { label: turno.horario_inicio })}
+                    title="Quitar turno"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="reservation-actions">
+            <button className="clear-selection-btn" onClick={clearSelection}>
+              Limpiar selección
+            </button>
+            <button className="proceed-reservation-btn" onClick={handleProcederReserva}>
+              Proceder con la reserva
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de login si no está autenticado */}
+      {showLoginModal && <Login onClose={handleCloseLogin} message={loginMessage} />}
     </div>
   );
 }
